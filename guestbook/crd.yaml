@@ -25,7 +25,7 @@ spec:
     singular: myresource           # 리소스의 단수형 이름
     kind: MyResource               # 리소스의 Kind 이름
     shortNames:
-    - mr                           # 짧은 이름 (선택사항)
+    - mrx                           # 짧은 이름 (선택사항)
 ---
 apiVersion: v1
 kind: Service
