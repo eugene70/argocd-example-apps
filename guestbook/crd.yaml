@@ -1,0 +1,60 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: myresources.example.com  # CRD의 이름 (Plural 형태로 작성)
+spec:
+  group: example.com              # API 그룹
+  versions:
+    - name: v1                    # 버전 정보
+      served: true                # API 서버에서 이 버전을 제공할지 여부
+      storage: true               # 기본 저장 버전인지 여부
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                size:
+                  type: integer
+                name:
+                  type: string
+  scope: Namespaced                # 리소프의 범위 (Namespaced 또는 Cluster)
+  names:
+    plural: myresources            # 리소스의 복수형 이름
+    singular: myresource           # 리소스의 단수형 이름
+    kind: MyResource               # 리소스의 Kind 이름
+    shortNames:
+    - mr                           # 짧은 이름 (선택사항)
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: guestbook-ui
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: guestbook-ui
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: guestbook-ui
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: guestbook-ui
+  template:
+    metadata:
+      labels:
+        app: guestbook-ui
+    spec:
+      containers:
+      - image: gcr.io/heptio-images/ks-guestbook-demo:0.2
+        name: guestbook-ui
+        ports:
+        - containerPort: 80
